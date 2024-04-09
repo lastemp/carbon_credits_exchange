@@ -52,6 +52,8 @@ pub fn init(ctx: Context<Init>, params: &InitParams) -> Result<()> {
     application.active = true;
     carbon_credits_configs.total_no_of_trees_planted = 0;
     carbon_credits_configs.total_carbon_credits = 0;
+    carbon_credits_configs.single_tree_to_carbon_credits_mapping =
+        params.single_tree_to_carbon_credits_mapping;
     carbon_credits_configs.unit_cost_of_carbon_credit = params.unit_cost_of_carbon_credit;
     carbon_credits_configs.active = true;
 

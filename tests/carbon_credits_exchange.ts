@@ -242,6 +242,11 @@ describe("carbon_credits_exchange", () => {
 
     let result = await program.account.treeOwner.fetch(tree_owner);
     console.log("tree_owner: ", result);
+
+    let result1 = await program.account.carbonCreditsConfigs.fetch(
+      carbon_credits_configs
+    );
+    console.log("configs: ", result1);
   });
 
   it("Is purchase carbon credits", async () => {
