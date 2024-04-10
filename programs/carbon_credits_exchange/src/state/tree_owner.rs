@@ -2,10 +2,12 @@ use anchor_lang::prelude::*;
 
 //#[account]
 //#[derive(Default, Debug, InitSpace)]
-#[derive(Default, Debug, AnchorSerialize, AnchorDeserialize, Copy, Clone, InitSpace)]
+#[derive(Default, Debug, AnchorSerialize, AnchorDeserialize, Clone, InitSpace)]
 pub struct GpsCoordinates {
-    pub latitude: f32,  // latitude
-    pub longitude: f32, // longitude
+    #[max_len(10)]
+    pub latitude: String, // latitude
+    #[max_len(10)]
+    pub longitude: String, // longitude
 }
 
 #[account]

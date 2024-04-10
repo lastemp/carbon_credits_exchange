@@ -67,16 +67,38 @@ pub fn register_tree_owner(
         return Err(HealthcareStaffingError::InvalidLength.into());
     }
 
-    if params.land_coordinates.latitude == 0.0 || params.land_coordinates.longitude == 0.0 {
+    if params.land_coordinates.latitude.as_bytes().len() == 0
+        || params.land_coordinates.longitude.as_bytes().len() == 0
+    {
         return Err(HealthcareStaffingError::InvalidGpsCoordinates.into());
     }
 
     let tree_owner = &mut ctx.accounts.tree_owner;
+
+    let latitude = params
+        .land_coordinates
+        .latitude
+        .replace(" ", "")
+        .to_string();
+    let longitude = params
+        .land_coordinates
+        .longitude
+        .replace(" ", "")
+        .to_string();
+    let is_valid_latitude = latitude.trim().parse::<f32>().is_ok();
+    let is_valid_longitude = longitude.trim().parse::<f32>().is_ok();
+
+    if !is_valid_latitude || !is_valid_longitude {
+        return Err(HealthcareStaffingError::InvalidGpsCoordinates.into());
+    }
+
     // * - means dereferencing
     tree_owner.owner = *ctx.accounts.owner.key;
     tree_owner.national_id_no = params.national_id_no;
     tree_owner.full_names = params.full_names.to_string();
-    tree_owner.land_coordinates = params.land_coordinates;
+    //tree_owner.land_coordinates = params.land_coordinates;
+    tree_owner.land_coordinates.latitude = latitude;
+    tree_owner.land_coordinates.longitude = longitude;
     tree_owner.country = params.country.to_string();
     tree_owner.active = true;
 

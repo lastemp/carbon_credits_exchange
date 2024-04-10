@@ -137,8 +137,8 @@ describe("carbon_credits_exchange", () => {
 
   it("Is register tree owner!", async () => {
     let gpsCoordinates = {
-      latitude: 56.2928,
-      longitude: 76.822,
+      latitude: "-1.288811",
+      longitude: "36.823219",
     };
 
     let initParams = {
@@ -147,9 +147,6 @@ describe("carbon_credits_exchange", () => {
       landCoordinates: gpsCoordinates,
       country: "KE",
     };
-
-    console.log("landCoordinates latitude: " + gpsCoordinates.latitude);
-    console.log("landCoordinates longitude: " + gpsCoordinates.longitude);
 
     const tx = await program.methods
       .registerTreeOwner(initParams)
