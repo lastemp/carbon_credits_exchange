@@ -7,22 +7,24 @@ pub enum HealthcareStaffingError {
     // applicant
     #[msg("Exceeded full names max length")]
     ExceededFullNamesMaxLength,
-    #[msg("Exceeded date of birth max length")]
-    ExceededDateOfBirthMaxLength,
-    #[msg("Exceeded hospital max length")]
-    ExceededHospitalMaxLength,
     #[msg("Country must have length of two or three")]
     InvalidCountryLength,
-    #[msg("Exceeded transcript max length")]
-    ExceededTranscriptMaxLength,
-    #[msg("Exceeded certificate max length")]
-    ExceededCertificateMaxLength,
-    #[msg("Exceeded license max length")]
-    ExceededLicenseMaxLength,
     #[msg("National id no must have a value greater than zero.")]
     InvalidNationalIdNo,
-    #[msg("license no must have a value greater than zero.")]
-    InvalidLicenseNo,
+    #[msg("Single tree to carbon credits mapping must have a value greater than zero.")]
+    InvalidSingleTreeToCarbonCreditsMapping,
+    #[msg("Unit cost of carbon credit must have a value greater than zero.")]
+    InvalidUnitCostOfCarbonCredit,
+    #[msg("No of trees must have a value greater than zero.")]
+    InvalidNoofTrees,
+    #[msg("Carbon credits must have a value greater than zero.")]
+    InvalidCarbonCredits,
+    #[msg("Arithmetic operation failed.")]
+    InvalidArithmeticOperation,
+    #[msg("Tree owner has no active status.")]
+    InvalidTreeOwnerStatus,
+    #[msg("Gps coordinates has invalid values.")]
+    InvalidGpsCoordinates,
 
     // institution
     #[msg("Institution type must have either of these values 1,2,3 or 4.")]
@@ -32,17 +34,13 @@ pub enum HealthcareStaffingError {
     #[msg("Exceeded institution name max length")]
     ExceededInstitutionNameMaxLength,
 
-    // application
-    #[msg("Application must be submitted by applicant in previous step to proceed.")]
-    InvalidApplicationSubmissionStatus,
+    // carbon credits configs
+    #[msg("Carbon credits configs has no active status.")]
+    InvalidCarbonCreditsConfigsStatus,
 
-    // approve applicant
-    #[msg("Exceeded Declined reason max length")]
-    ExceededDeclinedReasonMaxLength,
-    #[msg("Declined reason must have value if approval is declined")]
-    InvalidDeclinedReason,
-    #[msg("Approval must be done in previous step to proceed.")]
-    InvalidApprovalStatus,
+    // carbon credits application
+    #[msg("Carbon credits application has no active status.")]
+    InvalidApplicationActiveStatus,
 
     // invalid length
     #[msg("Item must have a length greater than zero.")]

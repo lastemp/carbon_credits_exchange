@@ -2,6 +2,7 @@
 
 use {
     crate::{
+        error::HealthcareStaffingError,
         //error::PerpetualsError,
         //math,
         state::application::CarbonCreditsApplication,
@@ -46,6 +47,14 @@ pub struct InitParams {
 }
 
 pub fn init(ctx: Context<Init>, params: &InitParams) -> Result<()> {
+    msg!("Validate inputs");
+    if params.single_tree_to_carbon_credits_mapping == 0 {
+        return Err(HealthcareStaffingError::InvalidSingleTreeToCarbonCreditsMapping.into());
+    }
+    if params.unit_cost_of_carbon_credit == 0 {
+        return Err(HealthcareStaffingError::InvalidUnitCostOfCarbonCredit.into());
+    }
+
     let application = &mut ctx.accounts.application;
     let carbon_credits_configs = &mut ctx.accounts.carbon_credits_configs;
     // * - means dereferencing

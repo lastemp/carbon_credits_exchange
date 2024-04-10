@@ -31,9 +31,9 @@ pub struct RegisterTreeOwner<'info> {
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct RegisterTreeOwnerParams {
-    national_id_no: u32, // national id no
-    full_names: String,  // full names i.e first name, middlename, surname
-    //land_coordinates: GpsCoordinates, // land coordinates
+    national_id_no: u32,              // national id no
+    full_names: String,               // full names i.e first name, middlename, surname
+    land_coordinates: GpsCoordinates, // land coordinates
     //no_of_trees: u32,                 // no of trees planted
     country: String, // home country of tree owner
 }
@@ -67,11 +67,16 @@ pub fn register_tree_owner(
         return Err(HealthcareStaffingError::InvalidLength.into());
     }
 
+    if params.land_coordinates.latitude == 0.0 || params.land_coordinates.longitude == 0.0 {
+        return Err(HealthcareStaffingError::InvalidGpsCoordinates.into());
+    }
+
     let tree_owner = &mut ctx.accounts.tree_owner;
     // * - means dereferencing
     tree_owner.owner = *ctx.accounts.owner.key;
     tree_owner.national_id_no = params.national_id_no;
     tree_owner.full_names = params.full_names.to_string();
+    tree_owner.land_coordinates = params.land_coordinates;
     tree_owner.country = params.country.to_string();
     tree_owner.active = true;
 

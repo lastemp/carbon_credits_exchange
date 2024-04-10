@@ -4,7 +4,6 @@ use {
     crate::{
         error::HealthcareStaffingError, state::application::CarbonCreditsApplication,
         state::configs::CarbonCreditsConfigs, state::institution::Institution,
-        state::tree_owner::TreeOwner,
     },
     anchor_lang::prelude::*,
 };
@@ -17,11 +16,11 @@ pub struct PurchaseCarbonCredits<'info> {
     // mut makes it changeble (mutable)
     /// CHECK: carbon_credits_configs account for active status
     #[account(
-        mut, constraint = carbon_credits_configs.active @ HealthcareStaffingError::InvalidApplicationSubmissionStatus
+        mut, constraint = carbon_credits_configs.active @ HealthcareStaffingError::InvalidCarbonCreditsConfigsStatus
     )]
     pub carbon_credits_configs: Account<'info, CarbonCreditsConfigs>,
     #[account(
-        mut, constraint = carbon_credits_application.active @ HealthcareStaffingError::InvalidApplicationSubmissionStatus
+        mut, constraint = carbon_credits_application.active @ HealthcareStaffingError::InvalidApplicationActiveStatus
     )]
     pub carbon_credits_application: Account<'info, CarbonCreditsApplication>,
     // mut makes it changeble (mutable)
@@ -42,7 +41,7 @@ pub fn purchase_carbon_credits(
     // validate inputs
     msg!("Validate inputs");
     if params.carbon_credits == 0 {
-        return Err(HealthcareStaffingError::InvalidNationalIdNo.into());
+        return Err(HealthcareStaffingError::InvalidCarbonCredits.into());
     }
 
     // do a check to determine if carbon_credits are available in carbon_credits_configs
@@ -59,15 +58,15 @@ pub fn purchase_carbon_credits(
 
     carbon_credits_application.total_carbon_credits = total_carbon_credits
         .checked_add(carbon_credits)
-        .ok_or(HealthcareStaffingError::InvalidNationalIdNo)?; // + carbon_credits;
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
     carbon_credits_configs.total_carbon_credits = total_carbon_credits_configs
         .checked_sub(carbon_credits)
-        .ok_or(HealthcareStaffingError::ExceededLicenseMaxLength)?; // - carbon_credits;
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
     carbon_credits_application.total_purchase_amount = unit_cost_of_carbon_credit
         .checked_mul(carbon_credits)
-        .ok_or(HealthcareStaffingError::InvalidCountryLength)?; // * carbon_credits;
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
     Ok(())
 }

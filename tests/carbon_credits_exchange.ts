@@ -136,24 +136,20 @@ describe("carbon_credits_exchange", () => {
   });
 
   it("Is register tree owner!", async () => {
-    /*  interface GpsCoordinates {
-      latitude: number;
-      longitude: number;
-    }
-
-    function getGpsCoordinates(): GpsCoordinates {
-      return {
-        latitude: 208,
-        longitude: 865,
-      };
-    } */
+    let gpsCoordinates = {
+      latitude: 56.2928,
+      longitude: 76.822,
+    };
 
     let initParams = {
       nationalIdNo: 1234,
       fullNames: "paul john",
-      //landCoordinates: getGpsCoordinates(),
+      landCoordinates: gpsCoordinates,
       country: "KE",
     };
+
+    console.log("landCoordinates latitude: " + gpsCoordinates.latitude);
+    console.log("landCoordinates longitude: " + gpsCoordinates.longitude);
 
     const tx = await program.methods
       .registerTreeOwner(initParams)
