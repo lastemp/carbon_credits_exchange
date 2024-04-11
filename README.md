@@ -9,7 +9,7 @@ Below are some basic features contained in the program:
 - Register institution
 - Approve tree owner
 - Purchase carbon credits
-- Withdraw tree owner's Funds
+- Withdraw tree owner's funds (generated from purchase of carbon credits)
 
 ## Getting started
 
