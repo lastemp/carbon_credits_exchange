@@ -58,8 +58,6 @@ pub fn purchase_carbon_credits(
         return Err(HealthcareStaffingError::InvalidCarbonCredits.into());
     }
 
-    // do a check to determine if carbon_credits are available in carbon_credits_configs
-
     let deposit_auth = &ctx.accounts.owner;
     let sys_program = &ctx.accounts.system_program;
 
