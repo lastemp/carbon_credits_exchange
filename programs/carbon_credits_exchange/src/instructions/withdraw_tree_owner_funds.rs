@@ -56,8 +56,6 @@ pub fn withdraw_funds(
         return Err(HealthcareStaffingError::InvalidWithdrawalAmount.into());
     }
 
-    // do a check to determine if carbon_credits are available in carbon_credits_configs
-
     let sys_program = &ctx.accounts.system_program;
     let deposit_account = &ctx.accounts.admin_deposit_account;
     let pda_auth = &mut ctx.accounts.admin_pda_auth;
@@ -78,12 +76,13 @@ pub fn withdraw_funds(
         .checked_div(lamports)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
+    // Treasury's available funds should exceed withdrawal amount
     if treasury_available_funds as u64 > withdrawal_amount_sol {
     } else {
         return Err(HealthcareStaffingError::InsufficientTreasuryFunds.into());
     }
 
-    // Tree owner available funds should exceed withdrawal amount
+    // Tree owner's available funds should exceed withdrawal amount
     if available_funds as u64 > withdrawal_amount_sol {
     } else {
         return Err(HealthcareStaffingError::InsufficientFunds.into());

@@ -2,8 +2,6 @@
 pub mod approve_tree_owner;
 pub mod init;
 
-// test instructions
-
 // public instructions
 pub mod purchase_carbon_credits;
 pub mod register_institution;

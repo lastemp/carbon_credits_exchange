@@ -1,4 +1,4 @@
-//! AddApplicant instruction handler
+//! RegisterInstitution instruction handler
 
 use {
     crate::{error::HealthcareStaffingError, state::institution::Institution},

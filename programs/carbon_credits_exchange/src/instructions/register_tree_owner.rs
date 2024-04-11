@@ -96,7 +96,6 @@ pub fn register_tree_owner(
     tree_owner.owner = *ctx.accounts.owner.key;
     tree_owner.national_id_no = params.national_id_no;
     tree_owner.full_names = params.full_names.to_string();
-    //tree_owner.land_coordinates = params.land_coordinates;
     tree_owner.land_coordinates.latitude = latitude;
     tree_owner.land_coordinates.longitude = longitude;
     tree_owner.country = params.country.to_string();

@@ -79,14 +79,17 @@ pub fn purchase_carbon_credits(
         return Err(HealthcareStaffingError::InsufficientCarbonCredits.into());
     }
 
+    // Lets increment this account's total_carbon_credits with newly purchased carbon credits
     carbon_credits_application.total_carbon_credits = total_carbon_credits
         .checked_add(carbon_credits)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
+    // Lets deduct this account's total_carbon_credits with newly purchased carbon credits
     carbon_credits_configs.total_carbon_credits = total_carbon_credits_configs
         .checked_sub(carbon_credits)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
+    // Lets get total_purchase_amount from the product of unit_cost_of_carbon_credit and newly purchased carbon credits
     let total_purchase_amount = unit_cost_of_carbon_credit
         .checked_mul(carbon_credits)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
@@ -99,8 +102,8 @@ pub fn purchase_carbon_credits(
 
     carbon_credits_application.total_purchase_amount = total_purchase_amount;
 
-    let lamports: u32 = 1_000_000_000; // 1 SOL = 1,000,000,000 lamports
-    let _amount = total_purchase_amount
+    let lamports: u64 = 1_000_000_000; // 1 SOL = 1,000,000,000 lamports
+    let _amount = (total_purchase_amount as u64)
         .checked_mul(lamports)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 

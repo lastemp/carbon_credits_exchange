@@ -8,26 +8,26 @@ describe("carbon_credits_exchange", () => {
 
   const program = anchor.workspace
     .CarbonCreditsExchange as Program<CarbonCreditsExchange>;
-  const admin_owner = anchor.web3.Keypair.generate();
-  const admin_deposit_account = anchor.web3.Keypair.generate();
-  const applicant_tree_owner = anchor.web3.Keypair.generate();
-  const institution_owner_1 = anchor.web3.Keypair.generate();
-  const institution_owner_2 = anchor.web3.Keypair.generate();
+  const adminOwner = anchor.web3.Keypair.generate();
+  const adminDepositAccount = anchor.web3.Keypair.generate();
+  const applicantTreeOwner = anchor.web3.Keypair.generate();
+  const institutionOwner1 = anchor.web3.Keypair.generate();
+  const institutionOwner2 = anchor.web3.Keypair.generate();
 
   // admin
-  let [admin_pda_auth, admin_pda_bump] =
+  let [adminPdaAuth, adminPdaBump] =
     anchor.web3.PublicKey.findProgramAddressSync(
       [
         anchor.utils.bytes.utf8.encode("admin-auth"),
-        admin_deposit_account.publicKey.toBuffer(),
+        adminDepositAccount.publicKey.toBuffer(),
       ],
       program.programId
     );
-  let [admin_sol_vault, admin_sol_bump] =
+  let [adminSolVault, adminSolBump] =
     anchor.web3.PublicKey.findProgramAddressSync(
       [
         anchor.utils.bytes.utf8.encode("admin-sol-vault"),
-        admin_pda_auth.toBuffer(),
+        adminPdaAuth.toBuffer(),
       ],
       program.programId
     );
@@ -37,39 +37,39 @@ describe("carbon_credits_exchange", () => {
     program.programId
   );
 
-  let [carbon_credits_configs] = anchor.web3.PublicKey.findProgramAddressSync(
+  let [carbonCreditsConfigs] = anchor.web3.PublicKey.findProgramAddressSync(
     [anchor.utils.bytes.utf8.encode("carbon-credits-configs")],
     program.programId
   );
 
-  let [tree_owner] = anchor.web3.PublicKey.findProgramAddressSync(
+  let [treeOwner] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode("tree-owner"),
-      applicant_tree_owner.publicKey.toBuffer(),
+      applicantTreeOwner.publicKey.toBuffer(),
     ],
     program.programId
   );
 
-  let [institution_1] = anchor.web3.PublicKey.findProgramAddressSync(
+  let [institution1] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode("institution"),
-      institution_owner_1.publicKey.toBuffer(),
+      institutionOwner1.publicKey.toBuffer(),
     ],
     program.programId
   );
 
-  let [institution_2] = anchor.web3.PublicKey.findProgramAddressSync(
+  let [institution2] = anchor.web3.PublicKey.findProgramAddressSync(
     [
       anchor.utils.bytes.utf8.encode("institution"),
-      institution_owner_2.publicKey.toBuffer(),
+      institutionOwner2.publicKey.toBuffer(),
     ],
     program.programId
   );
 
-  // admin_owner
+  // adminOwner
   before(async () => {
     let res = await provider.connection.requestAirdrop(
-      admin_owner.publicKey,
+      adminOwner.publicKey,
       10 * anchor.web3.LAMPORTS_PER_SOL
     );
 
@@ -82,10 +82,10 @@ describe("carbon_credits_exchange", () => {
     });
   });
 
-  // applicant_tree_owner
+  // applicantTreeOwner
   before(async () => {
     let res = await provider.connection.requestAirdrop(
-      applicant_tree_owner.publicKey,
+      applicantTreeOwner.publicKey,
       10 * anchor.web3.LAMPORTS_PER_SOL
     );
 
@@ -98,10 +98,10 @@ describe("carbon_credits_exchange", () => {
     });
   });
 
-  // institution_owner 1
+  // institutionOwner1
   before(async () => {
     let res = await provider.connection.requestAirdrop(
-      institution_owner_1.publicKey,
+      institutionOwner1.publicKey,
       10 * anchor.web3.LAMPORTS_PER_SOL
     );
 
@@ -114,11 +114,11 @@ describe("carbon_credits_exchange", () => {
     });
   });
 
-  // institution_owner 2
+  // institutionOwner2
   before(async () => {
     let res = await provider.connection.requestAirdrop(
-      institution_owner_2.publicKey,
-      10 * anchor.web3.LAMPORTS_PER_SOL
+      institutionOwner2.publicKey,
+      50 * anchor.web3.LAMPORTS_PER_SOL
     );
 
     let latestBlockHash = await provider.connection.getLatestBlockhash();
@@ -131,25 +131,23 @@ describe("carbon_credits_exchange", () => {
   });
 
   it("Is initialized!", async () => {
-    // Funds generated from selling carbon credits is shared as indicated: Tree owner - 50%, Treasury - 50%
     let initParams = {
       singleTreeToCarbonCreditsMapping: 10, // 1 tree is equal to 10 carbon credits
       unitCostOfCarbonCredit: 1, // 1 carbon credit is equal to 1 Sol
-      //treeOwnersShareCost: 0.5, // This is a percentage expressed as decimal i.e 50%
     };
 
     const tx = await program.methods
       .init(initParams)
       .accounts({
-        owner: admin_owner.publicKey,
+        owner: adminOwner.publicKey,
         application: application,
-        carbonCreditsConfigs: carbon_credits_configs,
-        adminDepositAccount: admin_deposit_account.publicKey,
-        adminPdaAuth: admin_pda_auth,
-        adminSolVault: admin_sol_vault,
+        carbonCreditsConfigs: carbonCreditsConfigs,
+        adminDepositAccount: adminDepositAccount.publicKey,
+        adminPdaAuth: adminPdaAuth,
+        adminSolVault: adminSolVault,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([admin_owner, admin_deposit_account])
+      .signers([adminOwner, adminDepositAccount])
       .rpc();
     console.log("Your transaction signature", tx);
 
@@ -175,16 +173,16 @@ describe("carbon_credits_exchange", () => {
     const tx = await program.methods
       .registerTreeOwner(initParams)
       .accounts({
-        owner: applicant_tree_owner.publicKey,
-        treeOwner: tree_owner,
+        owner: applicantTreeOwner.publicKey,
+        treeOwner: treeOwner,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([applicant_tree_owner])
+      .signers([applicantTreeOwner])
       .rpc();
     console.log("Your transaction signature", tx);
 
-    let result = await program.account.treeOwner.fetch(tree_owner);
-    console.log("tree_owner: ", result);
+    let result = await program.account.treeOwner.fetch(treeOwner);
+    console.log("treeOwner: ", result);
   });
 
   it("Is register institution - Agent", async () => {
@@ -201,15 +199,15 @@ describe("carbon_credits_exchange", () => {
     const tx = await program.methods
       .registerInstitution(initParams)
       .accounts({
-        owner: institution_owner_1.publicKey,
-        institution: institution_1,
+        owner: institutionOwner1.publicKey,
+        institution: institution1,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([institution_owner_1])
+      .signers([institutionOwner1])
       .rpc();
     console.log("Your transaction signature", tx);
 
-    let result = await program.account.institution.fetch(institution_1);
+    let result = await program.account.institution.fetch(institution1);
     console.log("institution: ", result);
   });
 
@@ -227,15 +225,15 @@ describe("carbon_credits_exchange", () => {
     const tx = await program.methods
       .registerInstitution(initParams)
       .accounts({
-        owner: institution_owner_2.publicKey,
-        institution: institution_2,
+        owner: institutionOwner2.publicKey,
+        institution: institution2,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([institution_owner_2])
+      .signers([institutionOwner2])
       .rpc();
     console.log("Your transaction signature", tx);
 
-    let result = await program.account.institution.fetch(institution_2);
+    let result = await program.account.institution.fetch(institution2);
     console.log("institution: ", result);
   });
 
@@ -248,42 +246,42 @@ describe("carbon_credits_exchange", () => {
     const tx = await program.methods
       .approveTreeOwner(initParams)
       .accounts({
-        owner: institution_owner_1.publicKey,
-        treeOwner: tree_owner,
-        carbonCreditsConfigs: carbon_credits_configs,
+        owner: institutionOwner1.publicKey,
+        treeOwner: treeOwner,
+        carbonCreditsConfigs: carbonCreditsConfigs,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([institution_owner_1])
+      .signers([institutionOwner1])
       .rpc();
     console.log("Your transaction signature", tx);
 
-    let result = await program.account.treeOwner.fetch(tree_owner);
-    console.log("tree_owner: ", result);
+    let result = await program.account.treeOwner.fetch(treeOwner);
+    console.log("treeOwner: ", result);
 
     let result1 = await program.account.carbonCreditsConfigs.fetch(
-      carbon_credits_configs
+      carbonCreditsConfigs
     );
     console.log("configs: ", result1);
   });
 
   it("Is purchase carbon credits", async () => {
     let initParams = {
-      carbonCredits: 4, // This equates to 3 Sol since 1 carbon credit = 1 Sol
+      carbonCredits: 40, // This equates to 40 Sol since 1 carbon credit = 1 Sol
     };
 
     const tx = await program.methods
       .purchaseCarbonCredits(initParams)
       .accounts({
-        owner: institution_owner_2.publicKey,
-        institution: institution_2,
-        carbonCreditsConfigs: carbon_credits_configs,
+        owner: institutionOwner2.publicKey,
+        institution: institution2,
+        carbonCreditsConfigs: carbonCreditsConfigs,
         carbonCreditsApplication: application,
-        adminDepositAccount: admin_deposit_account.publicKey,
-        adminPdaAuth: admin_pda_auth,
-        adminSolVault: admin_sol_vault,
+        adminDepositAccount: adminDepositAccount.publicKey,
+        adminPdaAuth: adminPdaAuth,
+        adminSolVault: adminSolVault,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([institution_owner_2])
+      .signers([institutionOwner2])
       .rpc();
     console.log("Your transaction signature", tx);
 
@@ -292,39 +290,39 @@ describe("carbon_credits_exchange", () => {
     );
     console.log("application: ", result);
     let result1 = await program.account.carbonCreditsConfigs.fetch(
-      carbon_credits_configs
+      carbonCreditsConfigs
     );
     console.log("configs: ", result1);
   });
 
-  it("Is withdraw tree owner funds", async () => {
-    let amount = new anchor.BN(3 * anchor.web3.LAMPORTS_PER_SOL);
+  it("Is withdraw tree owner's funds", async () => {
+    let amount = new anchor.BN(30 * anchor.web3.LAMPORTS_PER_SOL);
 
     let initParams = {
-      withdrawalAmount: amount, // This equates to 2 Sol since 1 carbon credit = 1 Sol
+      withdrawalAmount: amount, // This equates to 30 Sol since 1 carbon credit = 1 Sol
     };
 
     const tx = await program.methods
       .withdrawTreeOwnerFunds(initParams)
       .accounts({
-        owner: applicant_tree_owner.publicKey,
-        treeOwner: tree_owner,
-        carbonCreditsConfigs: carbon_credits_configs,
+        owner: applicantTreeOwner.publicKey,
+        treeOwner: treeOwner,
+        carbonCreditsConfigs: carbonCreditsConfigs,
         carbonCreditsApplication: application,
-        adminDepositAccount: admin_deposit_account.publicKey,
-        adminPdaAuth: admin_pda_auth,
-        adminSolVault: admin_sol_vault,
+        adminDepositAccount: adminDepositAccount.publicKey,
+        adminPdaAuth: adminPdaAuth,
+        adminSolVault: adminSolVault,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .signers([applicant_tree_owner])
+      .signers([applicantTreeOwner])
       .rpc();
     console.log("Your transaction signature", tx);
 
-    let result = await program.account.treeOwner.fetch(tree_owner);
-    console.log("tree_owner: ", result);
+    let result = await program.account.treeOwner.fetch(treeOwner);
+    console.log("treeOwner: ", result);
 
     let result1 = await program.account.carbonCreditsConfigs.fetch(
-      carbon_credits_configs
+      carbonCreditsConfigs
     );
     console.log("configs: ", result1);
   });

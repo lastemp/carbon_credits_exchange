@@ -1,5 +1,4 @@
-//approve_tree_owner.
-//! AddApplicant instruction handler
+//! ApproveTreeOwner instruction handler
 
 use {
     crate::{
@@ -55,10 +54,13 @@ pub fn approve_tree_owner(
     let total_carbon_credits = carbon_credits_configs.total_carbon_credits;
     //let tree_owners_share_cost: f32 = carbon_credits_configs.tree_owners_share_cost;
     let no_of_trees = params.no_of_trees;
+
+    // Get computed_carbon_credits from the product of no_of_trees and single_tree_to_carbon_credits_mapping
     let computed_carbon_credits = no_of_trees
         .checked_mul(single_tree_to_carbon_credits_mapping)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
+    // Get total_carbon_credits_amount from the product of unit_cost_of_carbon_credit and computed_carbon_credits
     let total_carbon_credits_amount = unit_cost_of_carbon_credit
         .checked_mul(computed_carbon_credits)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
@@ -70,12 +72,14 @@ pub fn approve_tree_owner(
     tree_owner.approval_status = params.approval_status;
     tree_owner.no_of_trees = no_of_trees;
     tree_owner.computed_carbon_credits = computed_carbon_credits;
-    tree_owner.available_funds = total_carbon_credits_amount;
+    tree_owner.available_funds = total_carbon_credits_amount; // Tree owner's available_funds generated from carbon credits amount
 
+    // Increment total_no_of_trees_planted with new no_of_trees
     carbon_credits_configs.total_no_of_trees_planted = total_no_of_trees_planted
         .checked_add(no_of_trees)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
+    // Increment total_carbon_credits with new computed_carbon_credits
     carbon_credits_configs.total_carbon_credits = total_carbon_credits
         .checked_add(computed_carbon_credits)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
