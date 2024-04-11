@@ -45,4 +45,11 @@ pub mod carbon_credits_exchange {
     ) -> Result<()> {
         instructions::purchase_carbon_credits(ctx, &params)
     }
+
+    pub fn withdraw_tree_owner_funds(
+        ctx: Context<WithdrawTreeOwnerFunds>,
+        params: WithdrawTreeOwnerFundsParams,
+    ) -> Result<()> {
+        instructions::withdraw_funds(ctx, &params)
+    }
 }

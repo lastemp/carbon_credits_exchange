@@ -23,6 +23,8 @@ pub enum HealthcareStaffingError {
     InvalidArithmeticOperation,
     #[msg("Tree owner has no active status.")]
     InvalidTreeOwnerStatus,
+    #[msg("Tree owner has no approval status.")]
+    InvalidTreeOwnerApprovalStatus,
     #[msg("Gps coordinates has invalid values.")]
     InvalidGpsCoordinates,
 
@@ -45,4 +47,22 @@ pub enum HealthcareStaffingError {
     // invalid length
     #[msg("Item must have a length greater than zero.")]
     InvalidLength,
+
+    // amount
+    #[msg("Invalid withdrawal amount.")]
+    InvalidWithdrawalAmount,
+    #[msg("Insufficient treasury funds.")]
+    InsufficientTreasuryFunds,
+    #[msg("Insufficient funds.")]
+    InsufficientFunds,
+
+    // carbon credits
+    #[msg("Insufficient carbon credits.")]
+    InsufficientCarbonCredits,
+
+    // deposit base
+    #[msg("Account is not initialized.")]
+    AccountNotInitialized,
+    #[msg("Account is already initialized.")]
+    AccountAlreadyInitialized,
 }

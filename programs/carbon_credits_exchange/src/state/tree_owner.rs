@@ -23,4 +23,6 @@ pub struct TreeOwner {
     pub country: String, // home country of tree owner
     pub active: bool,        // status of tree owner
     pub approval_status: bool, // Indicates approval status of tree owner
+    pub computed_carbon_credits: u32, // computed carbon credits for the total no of trees planted
+    pub available_funds: u64, // available funds computed from the carbon_credits issued to tree owner
 }

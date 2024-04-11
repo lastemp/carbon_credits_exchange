@@ -47,6 +47,8 @@ pub fn approve_tree_owner(
 
     let tree_owner = &mut ctx.accounts.tree_owner;
     let carbon_credits_configs = &mut ctx.accounts.carbon_credits_configs;
+
+    let unit_cost_of_carbon_credit: u32 = carbon_credits_configs.unit_cost_of_carbon_credit;
     let single_tree_to_carbon_credits_mapping =
         carbon_credits_configs.single_tree_to_carbon_credits_mapping as u32;
     let total_no_of_trees_planted = carbon_credits_configs.total_no_of_trees_planted;
@@ -56,8 +58,20 @@ pub fn approve_tree_owner(
         .checked_mul(single_tree_to_carbon_credits_mapping)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
+    let total_carbon_credits_amount = unit_cost_of_carbon_credit
+        .checked_mul(computed_carbon_credits)
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
+
+    /* // convert total_carbon_credits_amount to lamports
+    let lamports: u32 = 1_000_000_000; // 1 SOL = 1,000,000,000 lamports
+    let total_carbon_credits_amount_lamports = total_carbon_credits_amount
+        .checked_mul(lamports)
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?; */
+
     tree_owner.approval_status = params.approval_status;
     tree_owner.no_of_trees = no_of_trees;
+    tree_owner.computed_carbon_credits = computed_carbon_credits;
+    tree_owner.available_funds = total_carbon_credits_amount as u64;
 
     carbon_credits_configs.total_no_of_trees_planted = total_no_of_trees_planted
         .checked_add(no_of_trees)
