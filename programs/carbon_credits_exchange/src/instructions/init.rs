@@ -53,6 +53,7 @@ pub struct Init<'info> {
 pub struct InitParams {
     pub single_tree_to_carbon_credits_mapping: u8, // used to compute no of carbon credits from a single tree
     pub unit_cost_of_carbon_credit: u32,           // unit cost of carbon credit
+    pub tree_owners_share_cost: f32, // tree owners share costthe carbon credits purchased by companies
 }
 
 pub fn init(ctx: Context<Init>, params: &InitParams) -> Result<()> {
@@ -63,6 +64,9 @@ pub fn init(ctx: Context<Init>, params: &InitParams) -> Result<()> {
     if params.unit_cost_of_carbon_credit == 0 {
         return Err(HealthcareStaffingError::InvalidUnitCostOfCarbonCredit.into());
     }
+    /* if params.tree_owners_share_cost == 0.0 {
+        return Err(HealthcareStaffingError::InvalidTreeOwnersShareCost.into());
+    } */
 
     let deposit_account = &mut ctx.accounts.admin_deposit_account;
     let application = &mut ctx.accounts.application;
@@ -83,6 +87,7 @@ pub fn init(ctx: Context<Init>, params: &InitParams) -> Result<()> {
     carbon_credits_configs.single_tree_to_carbon_credits_mapping =
         params.single_tree_to_carbon_credits_mapping;
     carbon_credits_configs.unit_cost_of_carbon_credit = params.unit_cost_of_carbon_credit;
+    //carbon_credits_configs.tree_owners_share_cost = params.tree_owners_share_cost;
     carbon_credits_configs.active = true;
 
     Ok(())

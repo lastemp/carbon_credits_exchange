@@ -15,6 +15,8 @@ pub enum HealthcareStaffingError {
     InvalidSingleTreeToCarbonCreditsMapping,
     #[msg("Unit cost of carbon credit must have a value greater than zero.")]
     InvalidUnitCostOfCarbonCredit,
+    #[msg("Tree owners share cost must have a value greater than zero.")]
+    InvalidTreeOwnersShareCost,
     #[msg("No of trees must have a value greater than zero.")]
     InvalidNoofTrees,
     #[msg("Carbon credits must have a value greater than zero.")]

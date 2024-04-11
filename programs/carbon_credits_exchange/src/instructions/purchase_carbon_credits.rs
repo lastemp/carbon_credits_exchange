@@ -68,7 +68,7 @@ pub fn purchase_carbon_credits(
 
     let unit_cost_of_carbon_credit: u32 = carbon_credits_configs.unit_cost_of_carbon_credit;
     let total_carbon_credits_configs: u32 = carbon_credits_configs.total_carbon_credits;
-    let available_funds: u64 = carbon_credits_configs.available_funds;
+    let available_funds: u32 = carbon_credits_configs.available_funds;
     let total_carbon_credits: u32 = carbon_credits_application.total_carbon_credits;
     let carbon_credits = params.carbon_credits;
 
@@ -94,7 +94,7 @@ pub fn purchase_carbon_credits(
     // Lets increment treasury available_funds with total_purchase_amount for carbon credits
     // the purchase is done by company
     carbon_credits_configs.available_funds = available_funds
-        .checked_add(total_purchase_amount as u64)
+        .checked_add(total_purchase_amount)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
     carbon_credits_application.total_purchase_amount = total_purchase_amount;

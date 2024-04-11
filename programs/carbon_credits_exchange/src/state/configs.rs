@@ -7,6 +7,7 @@ pub struct CarbonCreditsConfigs {
     pub total_carbon_credits: u32,      // total carbon credits available
     pub single_tree_to_carbon_credits_mapping: u8, // used to compute no of carbon credits from a single tree
     pub unit_cost_of_carbon_credit: u32,           // unit cost of carbon credit
-    pub available_funds: u64, // available funds computed from the carbon credits purchased by companies
-    pub active: bool,         // status of configs
+    pub available_funds: u32, // available funds computed from the carbon credits purchased by companies
+    //pub tree_owners_share_cost: f32, // tree owners share costthe carbon credits purchased by companies
+    pub active: bool, // status of configs
 }

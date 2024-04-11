@@ -4,10 +4,7 @@ use {
     crate::{
         error::HealthcareStaffingError,
         state::application::CarbonCreditsApplication,
-        state::{
-            configs::CarbonCreditsConfigs, deposit_base::DepositBase, institution::Institution,
-            tree_owner::TreeOwner,
-        },
+        state::{configs::CarbonCreditsConfigs, deposit_base::DepositBase, tree_owner::TreeOwner},
     },
     anchor_lang::{prelude::*, system_program},
 };
@@ -71,8 +68,8 @@ pub fn withdraw_funds(
 
     let unit_cost_of_carbon_credit: u32 = carbon_credits_configs.unit_cost_of_carbon_credit;
     //let total_carbon_credits_configs: u32 = carbon_credits_configs.total_carbon_credits;
-    let treasury_available_funds: u64 = carbon_credits_configs.available_funds;
-    let available_funds: u64 = tree_owner.available_funds;
+    let treasury_available_funds: u32 = carbon_credits_configs.available_funds;
+    let available_funds: u32 = tree_owner.available_funds;
 
     // convert withdrawal_amount lamports to Sol
     let lamports = 1_000_000_000; // 1 SOL = 1,000,000,000 lamports
@@ -81,31 +78,26 @@ pub fn withdraw_funds(
         .checked_div(lamports)
         .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
-    /* // Check that carbon credits is available
-    if total_carbon_credits_configs == 0 {
-        return Err(HealthcareStaffingError::InsufficientCarbonCredits.into());
-    }
-
-    let total_amount_carbon_credits_configs = unit_cost_of_carbon_credit
-        .checked_mul(total_carbon_credits_configs)
-        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
-
-    // Total value of carbon credits in treasury should exceed withdrawal amount for tree owner
-    if total_amount_carbon_credits_configs as u64 > withdrawal_amount_sol {
-    } else {
-        return Err(HealthcareStaffingError::InsufficientTreasuryFunds.into());
-    } */
-
     if treasury_available_funds as u64 > withdrawal_amount_sol {
     } else {
         return Err(HealthcareStaffingError::InsufficientTreasuryFunds.into());
     }
 
     // Tree owner available funds should exceed withdrawal amount
-    if available_funds > withdrawal_amount_sol {
+    if available_funds as u64 > withdrawal_amount_sol {
     } else {
         return Err(HealthcareStaffingError::InsufficientFunds.into());
     }
+
+    // Deduct withdrawn amount from treasury's available funds
+    carbon_credits_configs.available_funds = treasury_available_funds
+        .checked_sub(withdrawal_amount_sol as u32)
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
+
+    // Deduct withdrawn amount from tree owner's available funds
+    tree_owner.available_funds = available_funds
+        .checked_sub(withdrawal_amount_sol as u32)
+        .ok_or(HealthcareStaffingError::InvalidArithmeticOperation)?;
 
     let amount = params.withdrawal_amount;
 

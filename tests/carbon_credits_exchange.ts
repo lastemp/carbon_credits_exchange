@@ -131,9 +131,11 @@ describe("carbon_credits_exchange", () => {
   });
 
   it("Is initialized!", async () => {
+    // Funds generated from selling carbon credits is shared as indicated: Tree owner - 50%, Treasury - 50%
     let initParams = {
-      singleTreeToCarbonCreditsMapping: 100,
-      unitCostOfCarbonCredit: 1,
+      singleTreeToCarbonCreditsMapping: 10, // 1 tree is equal to 10 carbon credits
+      unitCostOfCarbonCredit: 1, // 1 carbon credit is equal to 1 Sol
+      //treeOwnersShareCost: 0.5, // This is a percentage expressed as decimal i.e 50%
     };
 
     const tx = await program.methods
@@ -218,7 +220,7 @@ describe("carbon_credits_exchange", () => {
     let initParams = {
       //Company
       institutionType: 2,
-      institutionName: "Bamburi Cement Ltd",
+      institutionName: "Prix Manufacturing Ltd",
       country: "KE",
     };
 
@@ -266,7 +268,7 @@ describe("carbon_credits_exchange", () => {
 
   it("Is purchase carbon credits", async () => {
     let initParams = {
-      carbonCredits: 3, // This equates to 3 Sol since 1 carbon credit = 1 Sol
+      carbonCredits: 4, // This equates to 3 Sol since 1 carbon credit = 1 Sol
     };
 
     const tx = await program.methods
@@ -289,10 +291,14 @@ describe("carbon_credits_exchange", () => {
       application
     );
     console.log("application: ", result);
+    let result1 = await program.account.carbonCreditsConfigs.fetch(
+      carbon_credits_configs
+    );
+    console.log("configs: ", result1);
   });
 
   it("Is withdraw tree owner funds", async () => {
-    let amount = new anchor.BN(2 * anchor.web3.LAMPORTS_PER_SOL);
+    let amount = new anchor.BN(3 * anchor.web3.LAMPORTS_PER_SOL);
 
     let initParams = {
       withdrawalAmount: amount, // This equates to 2 Sol since 1 carbon credit = 1 Sol
