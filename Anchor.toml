@@ -1,3 +1,13 @@
+[features]
+seeds = false
+skip-lint = false
+
+[programs.localnet]
+carbon_credits_exchange = "BBR9aQywAfCLEPNhq3djmyYPGLrxyUmFoYNpd14X4NM9"
+
+[registry]
+url = "https://api.apr.dev"
+
 [provider]
 cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
