@@ -29,7 +29,7 @@ pub struct Init<'info> {
     #[account(
         init,
         payer = owner,
-        space = 8 + CarbonCreditsApplication::INIT_SPACE,
+        space = 8 + CarbonCreditsConfigs::INIT_SPACE,
         seeds = [b"carbon-credits-configs"],
         bump
     )]
